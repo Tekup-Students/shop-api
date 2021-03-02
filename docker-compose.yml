@@ -1,0 +1,38 @@
+version: '3'
+
+services:
+  shop_db:
+    image: postgres:12.4
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    expose:
+      - "5432"
+    volumes:
+      - postgressql_shop_data:/var/lib/postgresql/data
+
+  shop_web:
+    build:
+      context: .
+    ports:
+      - "5000:5000"
+    depends_on:
+      - shop_db
+    volumes:
+      - ./src:/app/src
+      - ./Pipfile:/app/Pipfile
+      - ./uploaded_media:/app/src/media:z
+      - ./entrypoint.sh:/app/entrypoint.sh
+    env_file:
+      - ./.env
+    tty: true
+
+  adminer:
+    image: adminer
+    restart: on-failure:5
+    ports:
+      - 8080:8080
+
+volumes:
+  postgressql_shop_data:

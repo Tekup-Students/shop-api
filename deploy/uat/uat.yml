@@ -1,0 +1,53 @@
+version: '3'
+
+services:
+  gu_prod_db:
+    image: postgres:12.4
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_DB: ${POSTGRES_DB_DEFAULT}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB_DEV: ${POSTGRES_DB_DEV}
+    expose:
+      - "5432"
+    volumes:
+      - build_postgres_data:/var/lib/postgresql/data/
+      - ./docker-entrypoint-initdb.d/init-database.sh:/docker-entrypoint-initdb.d/init-database.sh
+
+  gu_prod_web:
+    build:
+      context: .
+      dockerfile: Dockerfile.build
+    ports:
+      - "5000:8080"
+    depends_on:
+      - gu_prod_db
+    volumes:
+      - ./src:/app/src
+      - ./Pipfile:/app/Pipfile
+      - databases:/app/databases
+      - ./uploaded_media:/app/src/uploaded_media
+      - ./entrypoint.build.sh:/app/entrypoint.sh
+      #- ./Pipfile.lock:/app/Pipfile.lock
+    env_file:
+      - ./.env
+    tty: true
+
+  adminer:
+    image: adminer
+    restart: on-failure:5
+    ports:
+      - 8080:8080
+
+
+volumes:
+  build_postgres_data:
+  databases:
+    external:
+      name: flastrukt-api_databases
+
+
+networks:
+  default:
+    external:
+      name: flastrukt_net
