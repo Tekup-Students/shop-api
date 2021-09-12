@@ -12,7 +12,7 @@ python 3.5 or higher;
 Once you have all the needed requirements installed, clone the project:
 
 ``` bash
-git clone git@github.com:h5llsing/shop-api.git
+git clone git@github.com:er5bus/shop-api.git
 ```
 
 
@@ -98,7 +98,7 @@ Docker is an open platform for developing, shipping, and running applications. D
 Once you have all the needed requirements installed, clone the project:
 
 ``` bash
-git clone git@github.com:h5llsing/shop-api.git
+git clone git@github.com:er5bus/shop-api.git
 ```
 
 #### Configure .env file:
